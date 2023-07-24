@@ -56,12 +56,12 @@ public class JwtProvider {
     //권한정보 획득
     //spring security 인증 과정에서 권한 확인을 위한 기능
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = service.loadUserByUsername(this.getAccount(token));
+        UserDetails userDetails = service.loadUserByUsername(this.getEmail(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
     //token 에 담겨있는 member email 조회
-    private String getAccount(String token) {
+    private String getEmail(String token) {
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getSubject();
     }
 

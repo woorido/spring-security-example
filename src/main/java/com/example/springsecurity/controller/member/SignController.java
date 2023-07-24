@@ -1,10 +1,12 @@
-package com.example.springsecurity.member;
+package com.example.springsecurity.controller.member;
 
+import com.example.springsecurity.member.SignService;
 import com.example.springsecurity.member.dto.SignRequest;
 import com.example.springsecurity.member.dto.SignResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,6 +27,19 @@ public class SignController {
 
     @GetMapping("/user/get")
     public ResponseEntity<SignResponse> getUser(@RequestParam String email) throws Exception {
+        System.out.println("email = " + email);
+        return new ResponseEntity<>(signService.getMember(email), HttpStatus.OK);
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<SignResponse> getUser2(@RequestParam String email) throws Exception {
+        System.out.println("email = " + email);
+        return new ResponseEntity<>(signService.getMember(email), HttpStatus.OK);
+    }
+
+    @PostMapping("/get")
+    public ResponseEntity<SignResponse> getUser3(@RequestParam String email) throws Exception {
+        System.out.println("email = " + email);
         return new ResponseEntity<>(signService.getMember(email), HttpStatus.OK);
     }
 

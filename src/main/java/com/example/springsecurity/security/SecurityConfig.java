@@ -1,6 +1,7 @@
 package com.example.springsecurity.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
@@ -51,21 +52,18 @@ public class SecurityConfig {
                 })
                 //spring security 세션 정책 : 세션을 사용하지 않음
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                //조건별로 요청 허용/제한 설정
-                .authorizeRequests()
-//                .antMatchers("/").permitAll()
+                .and().authorizeRequests()
                 // 회원가입과 로그인은 모두 승인
-                .antMatchers("/register", "/login").permitAll()
-                // /admin으로 시작하는 요청은 ADMIN 권한이 있는 유저에게만 허용
+                .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
+                .antMatchers("/login", "/register").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                // /user 로 시작하는 요청은 USER 권한이 있는 유저에게만 허용
                 .antMatchers("/user/**").hasRole("USER")
-                .anyRequest().denyAll()
+                .anyRequest().authenticated()
                 .and()
                 //jwt 인증 필터 적용
                 //기본인증필터인 UsernamePasswordAuthenticationFilter의 앞에서 인증이 이뤄지면(SecurityContextHolder에 인증정보가 추가되면) AuthenticationFilter에서 인증 다음 흐름으로 넘어가는 방식으로 이해했다.
                 .addFilterBefore(new JwtAuthenticationFilter(provider), UsernamePasswordAuthenticationFilter.class)
+
                 //에러핸들링
                 .exceptionHandling()
                 .accessDeniedHandler(new AccessDeniedHandler() {
@@ -78,17 +76,19 @@ public class SecurityConfig {
                         response.getWriter().write("권한이 없는 사용자입니다.");
                     }
                 })
-                .authenticationEntryPoint(new AuthenticationEntryPoint() {
-                    @Override
-                    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-                        // 인증문제가 발생했을 때 이 부분을 호출한다.
-                        response.setStatus(401);
-                        response.setCharacterEncoding("utf-8");
-                        response.setContentType("text/html; charset=UTF-8");
-                        response.getWriter().write("인증되지 않은 사용자입니다.");
-                    }
-                });
+//                .authenticationEntryPoint(new AuthenticationEntryPoint() {
+//                    @Override
+//                    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+//                        // 인증문제가 발생했을 때 이 부분을 호출한다.
+//                        response.setStatus(401);
+//                        response.setCharacterEncoding("utf-8");
+//                        response.setContentType("text/html; charset=UTF-8");
+//                        response.getWriter().write("인증되지 않은 사용자입니다.");
+//                    }
+//                })
+        ;
 
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         return http.build();
     }
 

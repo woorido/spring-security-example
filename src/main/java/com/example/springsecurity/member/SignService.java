@@ -58,6 +58,7 @@ public class SignService {
 
     public SignResponse getMember(String email) throws Exception {
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new Exception("계정을 찾을 수 없다"));
+        System.out.println("member = " + member);
         return new SignResponse(member);
     }
 }

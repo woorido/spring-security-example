@@ -26,6 +26,8 @@ public class Member {
 
     private String username;
 
+    //@Enumerated(EnumType.STRING)
+    //private Authority3 authority;
     @OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Authority> roles = new ArrayList<>();
 
