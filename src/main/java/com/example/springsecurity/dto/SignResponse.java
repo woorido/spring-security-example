@@ -1,7 +1,7 @@
-package com.example.springsecurity.member.dto;
+package com.example.springsecurity.dto;
 
-import com.example.springsecurity.member.Authority;
-import com.example.springsecurity.member.Member;
+import com.example.springsecurity.security.Authority;
+import com.example.springsecurity.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

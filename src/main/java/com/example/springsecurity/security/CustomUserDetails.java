@@ -1,6 +1,6 @@
 package com.example.springsecurity.security;
 
-import com.example.springsecurity.member.Member;
+import com.example.springsecurity.entity.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,12 +25,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return getPassword();
+        return member.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return getUsername();
+        return member.getEmail();
     }
 
     @Override

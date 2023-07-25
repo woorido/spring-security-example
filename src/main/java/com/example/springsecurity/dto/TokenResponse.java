@@ -1,4 +1,4 @@
-package com.example.springsecurity.member.dto;
+package com.example.springsecurity.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

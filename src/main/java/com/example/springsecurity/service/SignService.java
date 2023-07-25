@@ -1,7 +1,10 @@
-package com.example.springsecurity.member;
+package com.example.springsecurity.service;
 
-import com.example.springsecurity.member.dto.SignRequest;
-import com.example.springsecurity.member.dto.SignResponse;
+import com.example.springsecurity.security.Authority;
+import com.example.springsecurity.entity.Member;
+import com.example.springsecurity.repository.MemberRepository;
+import com.example.springsecurity.dto.SignRequest;
+import com.example.springsecurity.dto.SignResponse;
 import com.example.springsecurity.security.JwtProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -54,11 +57,5 @@ public class SignService {
             throw new Exception("잘못된 요청입니다.");
         }
         return true;
-    }
-
-    public SignResponse getMember(String email) throws Exception {
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new Exception("계정을 찾을 수 없다"));
-        System.out.println("member = " + member);
-        return new SignResponse(member);
     }
 }

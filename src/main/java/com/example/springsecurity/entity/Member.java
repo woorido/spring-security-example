@@ -1,5 +1,6 @@
-package com.example.springsecurity.member;
+package com.example.springsecurity.entity;
 
+import com.example.springsecurity.security.Authority;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

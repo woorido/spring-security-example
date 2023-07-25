@@ -1,7 +1,7 @@
 package com.example.springsecurity.security;
 
-import com.example.springsecurity.member.Member;
-import com.example.springsecurity.member.MemberRepository;
+import com.example.springsecurity.entity.Member;
+import com.example.springsecurity.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

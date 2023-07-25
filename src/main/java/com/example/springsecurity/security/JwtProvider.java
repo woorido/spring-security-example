@@ -1,6 +1,5 @@
 package com.example.springsecurity.security;
 
-import com.example.springsecurity.member.Authority;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -12,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ import java.util.List;
 
 //jwt 생성 및 검증
 @RequiredArgsConstructor
-@Component
+@Component //어디서든 의존성을 주입받아 사용할 수 있음
 public class JwtProvider {
 
     @Value("${jwt.secret.key}")
@@ -46,15 +46,14 @@ public class JwtProvider {
         claims.put("roles", roles);
         Date now = new Date();
         return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + exp))
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .setClaims(claims) //정보저장
+                .setIssuedAt(now) //토큰발행시간
+                .setExpiration(new Date(now.getTime() + exp)) //만료시간
+                .signWith(secretKey, SignatureAlgorithm.HS256) //사용할 암호화 알고리즘과 Signature에 들어갈 secret 값 세팅
                 .compact();
     }
 
-    //권한정보 획득
-    //spring security 인증 과정에서 권한 확인을 위한 기능
+    //jwt 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = service.loadUserByUsername(this.getEmail(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
@@ -67,20 +66,19 @@ public class JwtProvider {
 
     //Authorization Header 통해 인증
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("Authorization");
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 
-    //token 검증
+    //token 유효성 + 만료일자 확인
     public boolean validateToken(String token) {
         try {
-            // Bearer 검증
-            if (!token.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER")) {
-                return false;
-            } else {
-                token = token.split(" ")[1].trim();
-            }
-            Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
 
+            Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+            boolean before = claimsJws.getBody().getExpiration().before(new Date());
             //만료되었을 시 false
             return !claimsJws.getBody().getExpiration().before(new Date());
         } catch (Exception e) {

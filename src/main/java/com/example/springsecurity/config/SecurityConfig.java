@@ -1,17 +1,16 @@
-package com.example.springsecurity.security;
+package com.example.springsecurity.config;
 
+import com.example.springsecurity.security.JwtAuthenticationFilter;
+import com.example.springsecurity.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -53,12 +52,14 @@ public class SecurityConfig {
                 //spring security 세션 정책 : 세션을 사용하지 않음
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests()
-                // 회원가입과 로그인은 모두 승인
+
+                // 회원가입, 로그인, 스웨거
                 .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
                 .antMatchers("/login", "/register").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/user/**").hasRole("USER")
                 .anyRequest().authenticated()
+
                 .and()
                 //jwt 인증 필터 적용
                 //기본인증필터인 UsernamePasswordAuthenticationFilter의 앞에서 인증이 이뤄지면(SecurityContextHolder에 인증정보가 추가되면) AuthenticationFilter에서 인증 다음 흐름으로 넘어가는 방식으로 이해했다.
@@ -88,7 +89,6 @@ public class SecurityConfig {
 //                })
         ;
 
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         return http.build();
     }
 

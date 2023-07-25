@@ -1,5 +1,6 @@
-package com.example.springsecurity.member;
+package com.example.springsecurity.security;
 
+import com.example.springsecurity.entity.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

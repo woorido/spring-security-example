@@ -1,4 +1,4 @@
-package com.example.springsecurity.member.dto;
+package com.example.springsecurity.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
